@@ -1,0 +1,54 @@
+package ru.javajabka.teamservice.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+import ru.javajabka.teamservice.exception.BadRequestException;
+import ru.javajabka.teamservice.model.User;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+    private final RestTemplate restTemplate;
+
+    @Value("${url.service.user}")
+    private String userServiceUrl;
+
+    public List<User> checkAndGetUsers(final List<Long> userIds) {
+
+        String url = UriComponentsBuilder
+                .fromUriString(userServiceUrl + "/api/v1/user")
+                .queryParam("ids", userIds.toArray())
+                .encode()
+                .build()
+                .toString();
+
+        ResponseEntity<List<User>> responseEntity =
+                restTemplate.exchange(
+                        url,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<>() {}
+                );
+
+        userIds.stream().filter(e -> !responseEntity.getBody().stream()
+                .map(User::getId).toList()
+                .contains(e))
+                .findFirst()
+                .ifPresent(
+                        (id) -> {
+                            throw new BadRequestException(String.format("Пользователь с id %d не найден", id));
+                        }
+                );
+
+        return responseEntity.getBody();
+    }
+}
