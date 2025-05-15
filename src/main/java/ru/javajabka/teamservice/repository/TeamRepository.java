@@ -13,7 +13,6 @@ import ru.javajabka.teamservice.model.TeamChangeDTO;
 import ru.javajabka.teamservice.model.TeamRequestDTO;
 import ru.javajabka.teamservice.repository.mapper.MemberMapper;
 import ru.javajabka.teamservice.repository.mapper.TeamMapper;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -136,8 +135,12 @@ public class TeamRepository {
                 .build();
     }
 
-    public List<Long> getTeamMembersById(Long teamId) {
-        return jdbcTemplate.query(GET_MEMBERS_BY_TEAM_ID, new MapSqlParameterSource("id", teamId), (rs, rowNum) -> rs.getLong("member_id"));
+    public List<Long> getTeamMembersByid(Long id) {
+        return jdbcTemplate.query(
+                GET_MEMBERS_BY_TEAM_ID,
+                new MapSqlParameterSource("id", id),
+                (rs, rowNum) -> rs.getLong("member_id")
+        );
     }
 
     private MapSqlParameterSource taskToSql(final TeamRequestDTO teamRequestDTO) {

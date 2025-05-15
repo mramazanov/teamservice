@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.javajabka.teamservice.model.Task;
 import ru.javajabka.teamservice.model.Team;
 import ru.javajabka.teamservice.model.TeamChangeDTO;
-import ru.javajabka.teamservice.model.TeamReport;
-import ru.javajabka.teamservice.model.TeamReportRequestDTO;
 import ru.javajabka.teamservice.model.TeamRequestDTO;
 import ru.javajabka.teamservice.service.TeamService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/team")
@@ -43,9 +43,15 @@ public class TeamServiceController {
         return teamService.removeMember(teamChangeDTO);
     }
 
-    @GetMapping("/report")
+    @GetMapping("/teamtasks")
     @Operation(summary = "Получить задачи команды")
-    public TeamReport getTeamReport(final TeamReportRequestDTO teamReportRequestDTO) {
-        return teamService.getTeamReport(teamReportRequestDTO);
+    public List<Task> getTeamReport(final Long teamId) {
+        return teamService.getTeamTasks(teamId);
+    }
+
+    @GetMapping
+    @Operation(summary = "Получить участников команды")
+    public List<Long> getMembers(final Long id) {
+        return teamService.getMembers(id);
     }
 }
