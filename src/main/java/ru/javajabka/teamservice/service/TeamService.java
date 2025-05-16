@@ -61,7 +61,7 @@ public class TeamService {
         }
 
         if (teamRequestDTO.getManagerId() == null || teamRequestDTO.getManagerId() <= 0) {
-            throw new BadRequestException("Введите id менедера больше нуля");
+            throw new BadRequestException("Введите id менеджера больше нуля");
         }
 
         if (teamRequestDTO.getMemberIds() == null || teamRequestDTO.getMemberIds().size() <= 1) {
